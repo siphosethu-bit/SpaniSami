@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SpaniSami Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
+    textarea { width: 100%; min-height: 120px; }
+    pre { white-space: pre-wrap; background: #f7f7f7; padding: 10px; }
+    .box { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>SpaniSami – Demo</h1>
+  <p>Tell SpaniSami about yourself in your own words (mix of English, isiZulu, slang – it’s fine):</p>
+
+  <textarea id="userInput" placeholder="e.g. I help at my uncle's spaza, I braid hair for the girls in my street, and I tutor maths..."></textarea>
+
+  <div class="box">
+    <label>
+      Target job (optional):
+      <input id="targetRole" type="text" placeholder="e.g. cashier, call centre, retail assistant" style="width: 100%;" />
+    </label>
+  </div>
+
+  <div class="box">
+    <button id="btnCreateProfile">Create Profile</button>
+    <button id="btnGenerateCV" disabled>Generate CV</button>
+  </div>
+
+  <div class="box">
+    <h2>Structured Profile (from backend)</h2>
+    <pre id="profileOutput">No profile yet.</pre>
+  </div>
+
+  <div class="box">
+    <h2>Generated CV</h2>
+    <pre id="cvOutput">No CV yet.</pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+// Change this if your backend runs on a different host/port
+const BASE_URL = "http://127.0.0.1:5000";
+
+const userInputEl = document.getElementById("userInput");
+const targetRoleEl = document.getElementById("targetRole");
+const profileOutputEl = document.getElementById("profileOutput");
+const cvOutputEl = document.getElementById("cvOutput");
+const btnCreateProfile = document.getElementById("btnCreateProfile");
+const btnGenerateCV = document.getElementById("btnGenerateCV");
+
+let currentProfileId = null;
+let currentProfile = null;
+
+// 1) Create profile from unstructured text
+btnCreateProfile.addEventListener("click", async () => {
+  const text = userInputEl.value.trim();
+  if (!text) {
+    alert("Please tell SpaniSami a bit about yourself first.");
+    return;
+  }
+
+  btnCreateProfile.disabled = true;
+  btnCreateProfile.textContent = "Creating profile...";
+  profileOutputEl.textContent = "Talking to SpaniSami...";
+
+  try {
+    const res = await fetch(`${BASE_URL}/profile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_input: text })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Backend error: ${res.status}`);
+    }
+
+    const data = await res.json();
+    // Your backend currently returns profile as a JSON string
+    // and profile_id as a separate field
+    currentProfileId = data.profile_id || null;
+    currentProfile = data.profile ? JSON.parse(data.profile) : null;
+
+    profileOutputEl.textContent = JSON.stringify(
+      { profile_id: currentProfileId, profile: currentProfile },
+      null,
+      2
+    );
+
+    btnGenerateCV.disabled = false;
+  } catch (err) {
+    console.error(err);
+    profileOutputEl.textContent =
+      "Eish, something went wrong talking to the backend.";
+  } finally {
+    btnCreateProfile.disabled = false;
+    btnCreateProfile.textContent = "Create Profile";
+  }
+});
+
+// 2) Generate CV using profile_id (or profile object)
+btnGenerateCV.addEventListener("click", async () => {
+  if (!currentProfileId && !currentProfile) {
+    alert("First create a profile.");
+    return;
+  }
+
+  const targetRole = targetRoleEl.value.trim() || null;
+
+  btnGenerateCV.disabled = true;
+  btnGenerateCV.textContent = "Generating CV...";
+  cvOutputEl.textContent = "SpaniSami is building your CV...";
+
+  try {
+    const res = await fetch(`${BASE_URL}/generate_cv`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        profile_id: currentProfileId,
+        profile: currentProfile, // send this if your endpoint expects it
+        target_role: targetRole
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Backend error: ${res.status}`);
+    }
+
+    const data = await res.json();
+    cvOutputEl.textContent = data.cv || "No CV text returned from backend.";
+  } catch (err) {
+    console.error(err);
+    cvOutputEl.textContent =
+      "Could not generate the CV. Check the backend logs.";
+  } finally {
+    btnGenerateCV.disabled = false;
+    btnGenerateCV.textContent = "Generate CV";
+  }
+});
