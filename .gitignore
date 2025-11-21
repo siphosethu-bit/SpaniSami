@@ -1,18 +1,27 @@
-# Python
+# --- Python / build ---
 __pycache__/
-*.pyc
-.env
+*.py[cod]
+*.pyo
+*.pyd
 
-# Node
-node_modules/
-
-# VS Code
-.vscode/
-
-# Environment
+# Virtual environments
+.venv/
 venv/
-.env
 
-# System
+# Environment / secrets
+.env
+.env.*
+backend/.env
+backend/database/.env
+backend/firebase-key.json
+
+# Node / JS (just in case later)
+node_modules/
+dist/
+build/
+
+# IDE / OS
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db

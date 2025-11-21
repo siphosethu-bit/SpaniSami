@@ -2,42 +2,555 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SpaniSami Demo</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
-    textarea { width: 100%; min-height: 120px; }
-    pre { white-space: pre-wrap; background: #f7f7f7; padding: 10px; }
-    .box { margin-top: 20px; }
-  </style>
+  <title>SpaniSami</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- jsPDF for "Download as PDF" -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Our frontend logic -->
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>SpaniSami – Demo</h1>
-  <p>Tell SpaniSami about yourself in your own words (mix of English, isiZulu, slang – it’s fine):</p>
+    <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+  <div class="logo">
+    Spani<span>Sami</span>
+    <img src="logo.jpg" alt="SpaniSami logo" class="logo-mark" />
+  </div>
+</div>
 
-  <textarea id="userInput" placeholder="e.g. I help at my uncle's spaza, I braid hair for the girls in my street, and I tutor maths..."></textarea>
+    <div class="nav-center">
+      <ul class="nav-links">
+        <li><a href="#" data-section="hero" class="active">Home</a></li>
+        <li><a href="#" data-section="cv-builder">CV Builder</a></li>
+        <li><a href="#" data-section="voice">Talk to SpaniSami</a></li>
+        <li><a href="#" data-section="job-scanner">Job Scanner</a></li>
+        <li><a href="#" data-section="resources">Resources</a></li>
+      </ul>
+    </div>
 
-  <div class="box">
-    <label>
-      Target job (optional):
-      <input id="targetRole" type="text" placeholder="e.g. cashier, call centre, retail assistant" style="width: 100%;" />
-    </label>
+    <div class="nav-right">
+      <!-- simple notification dot later if needed -->
+      <div class="nav-profile" id="navProfile">
+        <div class="nav-profile-avatar" id="navProfileAvatar">SS</div>
+
+        <div class="nav-profile-menu" id="profileMenu">
+          <div class="profile-menu-header">
+            <div class="profile-menu-name profile-name-text">Guest user</div>
+            <div class="profile-menu-email">guest@spanisami.app</div>
+          </div>
+          <button type="button" class="profile-menu-item">
+            Profile & settings
+          </button>
+          <button type="button" class="profile-menu-item" id="logoutBtn">
+            Log out
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+    <!-- HERO SECTION (HOME) -->
+  <section class="hero-section page-section active" id="hero">
+    <div class="hero-inner">
+      <!-- LEFT: TEXT CONTENT -->
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          Your AI career buddy for South African youth
+        </div>
+
+        <h1>Turn your hustle into a job‑ready CV</h1>
+
+        <p class="hero-lead">
+          Braiding hair, helping at the spaza, tutoring kids or running side gigs
+          SpaniSami turns your real hustle into a professional CV in minutes.
+        </p>
+
+        <div class="hero-pill-row">
+          <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            No “formal” job needed
+          </div>
+          <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            Mixed languages welcome
+          </div>
+          <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            Free during hackathon
+          </div>
+        </div>
+
+        <div class="hero-buttons">
+          <button class="primary-cta hero-primary" onclick="showSection('cv-builder')">
+            Build my CV
+          </button>
+          <button class="secondary-btn hero-secondary" onclick="showSection('voice')">
+            Talk to SpaniSami
+          </button>
+        </div>
+
+        <p class="hero-footnote">
+          Powered by OpenAI and built by Team 404 designed for SA youth looking for their first break.
+        </p>
+      </div>
+
+      <!-- RIGHT: TESTIMONIAL + STATS -->
+      <div class="hero-visual">
+        <!-- Rotating testimonial -->
+        <div class="testimonial-shell">
+          <div class="testimonial-card" id="testimonialCard">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar" id="testimonialAvatar">KS</div>
+              <div>
+                <div class="testimonial-name" id="testimonialName">Khosi Sambo</div>
+                <div class="testimonial-meta" id="testimonialMeta">
+                  Retail & Customer Support · Johannesburg
+                </div>
+              </div>
+            </div>
+            <p class="testimonial-quote" id="testimonialQuote">
+              "SpaniSami turned my weekend spaza hustle into a real CV. I finally felt
+              confident applying for jobs."
+            </p>
+          </div>
+          <div class="testimonial-dots" id="testimonialDots"></div>
+        </div>
+
+        <!-- Stats band -->
+        <div class="hero-stats-band">
+          <div class="hero-stat">
+            <div class="hero-stat-icon">⏱</div>
+            <div>
+              <div class="hero-stat-number">5 min</div>
+              <div class="hero-stat-label">to your first CV</div>
+            </div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-icon">🎯</div>
+            <div>
+              <div class="hero-stat-number">2 paths</div>
+              <div class="hero-stat-label">CV or interview prep</div>
+            </div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-icon">💬</div>
+            <div>
+              <div class="hero-stat-number">100%</div>
+              <div class="hero-stat-label">youth‑friendly language</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-builder-section page-section" id="cv-builder">
+  <div class="cv-builder-inner">
+    <h2>SpaniSami – CV Builder</h2>
+    <p class="section-description">
+      Tell SpaniSami about yourself in your own words. Mixed English, isiZulu, slang it’s fine.
+      The AI will translate it into professional CV language.
+    </p>
+
+    <div class="input-group">
+      <label for="userInput">Tell SpaniSami about yourself</label>
+      <textarea
+        id="userInput"
+        rows="5"
+        placeholder="E.g. 'I help at my uncle&#39;s spaza on weekends, I braid hair for people in the community, and I tutor maths for Grade 10s.'"
+      ></textarea>
+      <small class="helper-text">
+        Tip: write the way you speak. Mention any side hustles, responsibilities at home, or community work.
+      </small>
+    </div>
+
+    <div class="input-group">
+      <label for="targetRole">Target job (optional)</label>
+      <input
+        id="targetRole"
+        type="text"
+        placeholder="e.g. Cashier, Retail Assistant, Call Centre Agent"
+      />
+    </div>
+
+    <div class="actions">
+      <button id="btnCreateProfile" class="primary-cta">Create Profile</button>
+      <button id="btnGenerateCV" class="primary-cta" disabled>Generate CV</button>
+      <button id="btnDownloadPdf" class="ghost-btn" disabled>Download as PDF</button>
+    </div>
+
+    <div class="output-wrapper">
+      <div class="output-card">
+        <h3>Your CV</h3>
+        <pre id="cvOutput" class="output-pre">No CV yet.</pre>
+      </div>
+      <div class="output-card">
+        <h3>Structured Profile (from backend)</h3>
+        <pre id="profileOutput" class="output-pre">No profile yet.</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- VOICE ASSISTANT SECTION -->
+    <!-- VOICE ASSISTANT SECTION -->
+  <section class="voice-section page-section" id="voice">
+    <div class="voice-shell">
+      <div class="voice-header">
+        <h2>Talk to SpaniSami</h2>
+        <p>
+          Prefer talking instead of typing? Choose your language, tap the mic, and let SpaniSami coach you.
+        </p>
+      </div>
+
+      <div class="voice-main">
+        <!-- LEFT: ORB + CONTROLS -->
+        <div class="voice-visual">
+          <div class="voice-orb-wrapper state-idle">
+            <div class="voice-orb">
+              <div class="voice-orb-inner"></div>
+            </div>
+            <div class="voice-orb-ring ring-1"></div>
+            <div class="voice-orb-ring ring-2"></div>
+          </div>
+
+          <div class="voice-controls-row">
+            <div class="language-pill">
+              <span class="language-label">Language</span>
+              <select id="voiceLanguage" class="language-select">
+                <option value="en">English</option>
+                <option value="af">Afrikaans</option>
+                <option value="zu">isiZulu</option>
+                <option value="xh">isiXhosa</option>
+                <option value="st">Sesotho</option>
+                <option value="tn">Setswana</option>
+                <option value="nso">Sepedi</option>
+                <option value="ts">Xitsonga</option>
+                <option value="ve">Tshivenda</option>
+                <option value="ss">siSwati</option>
+                <option value="nr">isiNdebele</option>
+              </select>
+            </div>
+
+            <button id="btnToggleRecording" class="primary-cta mic-btn">
+              <span class="mic-icon"></span>
+              <span class="mic-label">Start talking</span>
+            </button>
+          </div>
+
+          <p class="mic-status" id="micStatus">Mic is off. Tap to start.</p>
+        </div>
+
+        <!-- RIGHT / BELOW: CHAT LOG -->
+        <div class="voice-chat-card">
+          <div class="voice-chat-card-header">
+            <span class="chip-live">Live chat log</span>
+            <span class="chip-hint">Your answers here will help build your CV</span>
+          </div>
+          <div id="voiceChatLog" class="voice-chat-log">
+            <div class="chat-message bot">
+              <div class="chat-label">SpaniSami</div>
+              <div class="chat-bubble">
+                Hi! Tell me your name and what kind of hustle or experience you have.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- JOB SCANNER SECTION -->
+  <section class="job-section page-section" id="job-scanner">
+  <div class="job-header">
+    <h2>Job Scanner</h2>
+    <p>
+      See entry-level job spots around you on the map. Adjust your search radius
+      and watch opportunities light up inside your circle.
+    </p>
   </div>
 
-  <div class="box">
-    <button id="btnCreateProfile">Create Profile</button>
-    <button id="btnGenerateCV" disabled>Generate CV</button>
+    <div class="job-controls">
+    <div class="city-control">
+      <label for="jobCity">Jump to city</label>
+      <select id="jobCity">
+        <option value="jhb" selected>Johannesburg</option>
+        <option value="pta">Pretoria</option>
+        <option value="cpt">Cape Town</option>
+        <option value="dbn">Durban</option>
+        <option value="plk">Polokwane</option>
+        <option value="bf">Bloemfontein</option>
+        <option value="gqe">Gqeberha</option>
+        <option value="rst">Rustenburg</option>
+      </select>
+    </div>
+
+    <button id="jobUseLocation" class="primary-cta">
+      Use my location
+    </button>
+
+    <div class="radius-control">
+      <label for="jobRadius">
+        Search radius:
+        <span id="jobRadiusLabel">5 km</span>
+      </label>
+      <input
+        type="range"
+        id="jobRadius"
+        min="1"
+        max="40"
+        step="1"
+        value="5"
+      />
+      <small class="helper-text">
+        Drag the slider to expand or shrink your job-hunting area.
+      </small>
+    </div>
   </div>
 
-  <div class="box">
-    <h2>Structured Profile (from backend)</h2>
-    <pre id="profileOutput">No profile yet.</pre>
+  <div id="jobMap" class="job-map"></div>
+
+  <!-- ✅ JOB DETAIL CARD -->
+  <div id="jobDetailCard" class="job-detail hidden">
+    <div class="job-detail-header">
+      <h3 id="jobDetailTitle">Job title</h3>
+      <button id="jobDetailClose" class="job-detail-close">&times;</button>
+    </div>
+    <p id="jobDetailMeta" class="job-detail-meta"></p>
+    <p id="jobDetailDescription"></p>
+
+    <ul id="jobDetailRequirements"></ul>
+
+        <div class="job-detail-actions">
+      <button id="jobDetailApply" class="primary-cta">
+        Apply for this job
+      </button>
+      <button id="jobDetailBuildCv" class="secondary-btn">
+        Build CV for this job
+      </button>
+      <button id="jobDetailTrain" class="ghost-btn">
+        Train me for this interview
+      </button>
+    </div>
   </div>
 
-  <div class="box">
-    <h2>Generated CV</h2>
-    <pre id="cvOutput">No CV yet.</pre>
-  </div>
+  <p class="job-tip">
+    The glowing circle shows your search area. Pins inside the circle highlight
+    job opportunities near you.
+  </p>
+</section>
 
-  <script src="script.js"></script>
+  <!-- RESOURCES SECTION -->
+  <section class="resources page-section" id="resources">
+    <div class="resources-inner">
+      <h2>Job-Hunting Resources</h2>
+      <p>
+        Soon you’ll find links here to learnerships, internship portals, interview tips,
+        and youth support programmes all in one place.
+      </p>
+      <ul class="resource-list">
+        <li>How to talk about your hustle in interviews</li>
+        <li>Beginner-friendly LinkedIn & email templates</li>
+        <li>Where to find entry-level jobs & learnerships</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Built with ❤️ by Team 404 for the Kion Consulting Hackathon</p>
+  </footer>
+   
+    <!-- AUTH / LOGIN MODAL -->
+  <div id="authModal" class="modal-backdrop hidden">
+    <div class="modal-shell">
+
+      <!-- STEP 1: SIGN UP (NAME + EMAIL) -->
+      <div class="modal-step" id="modalStepSignup">
+        <div class="modal-badge">Welcome to SpaniSami</div>
+        <h2 class="modal-title">Sign in to save your CVs</h2>
+        <p class="modal-text">
+          Create a quick profile so we can keep your CVs and interview progress in one place.
+        </p>
+
+                <form id="signupForm" class="modal-form">
+          <div class="modal-field">
+            <label for="signupName">Name</label>
+            <input
+              id="signupName"
+              name="name"
+              type="text"
+              placeholder="e.g. Lerato Mokoena"
+              required
+            />
+          </div>
+
+          <div class="modal-field">
+            <label for="signupEmail">Email</label>
+            <input
+              id="signupEmail"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div class="modal-field">
+            <label for="signupPhone">Phone number (for SMS code)</label>
+            <input
+              id="signupPhone"
+              name="phone"
+              type="tel"
+              placeholder="e.g. 061 234 5678"
+              required
+            />
+          </div>
+
+          <button type="submit" class="primary-cta modal-primary" id="signupContinueBtn">
+            Continue
+          </button>
+        </form>
+
+        <button type="button" id="continueGuestBtn" class="ghost-btn modal-ghost">
+          Continue as guest
+        </button>
+
+        <p class="modal-footnote">
+          No spam. We only use this to remember your session and CVs on this device.
+        </p>
+
+        <p class="modal-footnote">
+          Already have an account?
+          <button type="button" id="gotoLoginBtn" class="modal-link-button">
+            Log in
+          </button>
+        </p>s
+      </div>
+
+      <!-- STEP 2: VERIFY EMAIL -->
+      <div class="modal-step hidden" id="modalStepVerify">
+        <div class="modal-badge">Check your email</div>
+        <h2 class="modal-title">Verify your email address</h2>
+        <p class="modal-text" id="verifyHelpText">
+          We’ve sent a 6‑digit SMS code to <span id="verifyPhoneLabel"></span>.
+          For this demo, your code is <strong id="demoCodeValue"></strong>.
+        </p>
+
+        <form id="verifyForm" class="modal-form">
+          <div class="modal-field">
+            <label for="verifyCode">Enter 6‑digit code</label>
+            <input
+              id="verifyCode"
+              name="code"
+              type="text"
+              maxlength="6"
+              inputmode="numeric"
+              placeholder="123456"
+              required
+            />
+          </div>
+
+          <button type="submit" class="primary-cta modal-primary" id="verifyContinueBtn">
+            Verify
+          </button>
+        </form>
+
+        <button type="button" class="ghost-btn modal-ghost" id="verifyBackBtn">
+          Go back
+        </button>
+
+        <p class="modal-footnote" id="verifyError" style="color:#b91c1c; display:none;">
+          That code does not match. Please try again.
+        </p>
+      </div>
+
+      <!-- STEP 3: CREATE PASSWORD -->
+      <div class="modal-step hidden" id="modalStepPassword">
+        <div class="modal-badge">Secure your profile</div>
+        <h2 class="modal-title">Create a password</h2>
+        <p class="modal-text">
+          Set a password so you can log in to SpaniSami again on this device.
+        </p>
+
+        <form id="passwordForm" class="modal-form">
+          <div class="modal-field">
+            <label for="passwordInput">Password</label>
+            <input
+              id="passwordInput"
+              type="password"
+              minlength="6"
+              placeholder="At least 6 characters"
+              required
+            />
+          </div>
+          <div class="modal-field">
+            <label for="passwordConfirmInput">Confirm password</label>
+            <input
+              id="passwordConfirmInput"
+              type="password"
+              minlength="6"
+              placeholder="Type it again"
+              required
+            />
+          </div>
+
+          <button type="submit" class="primary-cta modal-primary" id="passwordContinueBtn">
+            Finish &amp; log me in
+          </button>
+        </form>
+
+        <p class="modal-footnote" id="passwordError" style="color:#b91c1c; display:none;">
+          Passwords do not match. Please try again.
+        </p>
+      </div>
+
+      <!-- STEP 4: LOGIN (RETURNING USERS) -->
+      <div class="modal-step hidden" id="modalStepLogin">
+        <div class="modal-badge">Welcome back</div>
+        <h2 class="modal-title">Log in to SpaniSami</h2>
+        <p class="modal-text">
+          Use the email and password you created to access your saved CVs.
+        </p>
+
+        <form id="loginForm" class="modal-form">
+          <div class="modal-field">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="modal-field">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" placeholder="Your password" required />
+          </div>
+
+          <button type="submit" class="primary-cta modal-primary" id="loginBtn">
+            Log in
+          </button>
+        </form>
+
+        <button type="button" id="loginGuestBtn" class="ghost-btn modal-ghost">
+          Continue as guest
+        </button>
+
+        <p class="modal-footnote" id="loginError" style="color:#b91c1c; display:none;">
+          Email or password incorrect. Please try again.
+        </p>
+      </div>
+
+    </div>
+  </div>
+  
+
+    <!-- Google Maps JS (Job Scanner) -->
+  <script
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMGoFJqxB82qNF_XvcYw83-UvkEB9dbH4&libraries=geometry&callback=initJobScannerMap"
+  ></script>
 </body>
 </html>
+
+
